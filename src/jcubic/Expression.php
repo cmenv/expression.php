@@ -16,14 +16,16 @@ class Expression {
     public $functions = [];
     public $suppress_errors = false;
     private $expr = null;
-    function __construct() {
+    private $decimal_separator;
+    function __construct($decimal_separator = '.') {
         $this->constants = ["e" => exp(1), "pi" => M_PI];
+        $this->decimal_separator = $decimal_separator;
     }
     function evaluate($expr) {
         if (empty(trim($expr))) {
             return null;
         }
-        $this->expr = new Parser($expr, $this->variables, $this->constants, $this->functions);
+        $this->expr = new Parser($expr, $this->variables, $this->constants, $this->functions, $this->decimal_separator);
         try {
             $res = $this->expr->match_Start();
             if ($res === FALSE) {

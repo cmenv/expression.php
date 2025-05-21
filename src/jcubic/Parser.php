@@ -23,11 +23,13 @@ class Parser extends Peg\Parser\Basic {
         'sqrt','abs','ln','log'
     ];
     private $constants;
-    public function __construct($expr, &$variables, &$constants, &$functions) {
+    private $decimal_separator = '.';
+    public function __construct($expr, &$variables, &$constants, &$functions, $decimal_separator = '.') {
         parent::__construct($expr);
         $this->variables = $variables;
         $this->constants = $constants;
         $this->functions = $functions;
+        $this->decimal_separator = $decimal_separator;
     }
     public function is_typed($value) {
         if (!is_array($value)) {
@@ -386,11 +388,19 @@ function match_Float($stack = []) {
 	$matchrule = 'Float';
 	$this->currentRule = $matchrule;
 	$result = $this->construct($matchrule, $matchrule);
-	if (($subres = $this->rx('/[0-9.]+e[0-9]+|[0-9]+(?:\.[0-9]*)?|\.[0-9]+/')) !== \false) {
-		$result["text"] .= $subres;
-		return $this->finalise($result);
+	if ($this->decimal_separator === ',') {
+		// Accept comma as decimal separator
+		if (($subres = $this->rx('/[0-9,]+e[0-9]+|[0-9]+(?:,[0-9]*)?|,[0-9]+/')) !== false) {
+			$result["text"] .= $subres;
+			return $this->finalise($result);
+		}
+	} else {
+		if (($subres = $this->rx('/[0-9.]+e[0-9]+|[0-9]+(?:\.[0-9]*)?|\.[0-9]+/')) !== false) {
+			$result["text"] .= $subres;
+			return $this->finalise($result);
+		}
 	}
-	else { return \false; }
+	return false;
 }
 
 
@@ -487,9 +497,13 @@ public function Number_Decimal (&$result, $sub) {
     }
 
 public function Number_Float (&$result, $sub) {
-        $value = floatval($sub['text']);
-        $result['val'] = $this->with_type($value);
+    $text = $sub['text'];
+    if ($this->decimal_separator === ',') {
+        $text = str_replace(',', '.', $text);
     }
+    $value = floatval($text);
+    $result['val'] = $this->with_type($value);
+}
 
 /* Consts: 'true' | 'false' | 'null' */
 protected $match_Consts_typestack = ['Consts'];

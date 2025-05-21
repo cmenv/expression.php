@@ -13,7 +13,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/jcubic/expression.php"
+            "url": "https://github.com/cmenv/expression.php"
         }
     ],
     "authors": [
