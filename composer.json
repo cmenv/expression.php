@@ -20,6 +20,10 @@
         {
             "name": "Jakub T. Jankiewicz",
             "email": "jcubic@onet.pl"
+        },
+        {
+            "name": "Camden M",
+            "email": "camden@eenvoud.nl"
         }
     ],
     "require-dev": {
