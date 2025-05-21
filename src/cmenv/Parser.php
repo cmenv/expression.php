@@ -7,7 +7,7 @@
  * This is Parser PEG grammar
  */
 
-namespace jcubic;
+namespace cmenv;
 
 use hafriedlander\Peg;
 use ReflectionFunction;
@@ -956,7 +956,7 @@ public function FunctionCall_Call (&$result, $sub) {
         $params_require_count = $function->getNumberOfRequiredParameters();
         $params_all_count = $function->getNumberOfParameters();
         if ($args_count < $params_require_count && $args_count > $params_all_count) {
-            throw new Exception("Function '$name' expected $params_count params got $args_count");
+            throw new Exception("Function '$name' expected $params_require_count to $params_all_count params got $args_count");
         }
         $result['val'] = $this->with_type($function->invokeArgs($args));
     }

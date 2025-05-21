@@ -7,7 +7,7 @@
  * This is Parser PEG grammar
  */
 
-namespace jcubic;
+namespace cmenv;
 
 use hafriedlander\Peg;
 use ReflectionFunction;
